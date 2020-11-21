@@ -31,15 +31,6 @@ public class MainController {
         return "Hi Admin, "+ new JwtTokenUtil().getUsernameFromToken(token);
     }
 
-    @GetMapping("/activate/{code}")
-    public String activateAccount(@PathVariable String code) {
-        val a = userRepo.findUserByActivationCode(code);
-        if (a.isPresent()) {
-            a.ifPresent(account -> account.setEmailConfirmation(null));
-            userRepo.save(a.get());
-            return "Activated";
-        }
-        return "Non existing code";
-    }
+
 
 }

@@ -6,6 +6,7 @@ import andrew.projects.workard.Config.JwtTokenUtil;
 import andrew.projects.workard.Domain.User;
 import andrew.projects.workard.Repos.UserRepo;
 import andrew.projects.workard.Service.JwtUserDetailsService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,5 +62,16 @@ public class JwtAuthenticationController {
 		} catch (BadCredentialsException e) {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
+	}
+	
+	@GetMapping("/activate/{code}")
+	public String activateAccount(@PathVariable String code) {
+		val a = userRepo.findUserByActivationCode(code);
+		if (a.isPresent()) {
+			a.ifPresent(account -> account.setEmailConfirmation(null));
+			userRepo.save(a.get());
+			return "Activated";
+		}
+		return "Non existing code";
 	}
 }
