@@ -1,11 +1,13 @@
 package andrew.projects.workard.Config;
 
+import andrew.projects.workard.Domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +20,11 @@ public class JwtTokenUtil implements Serializable {
     private final long JWT_TOKEN_VALIDITY = 172800;
 
     private final String secret = "Ultra mega secret salt for jwt";
+
+    public static String obtainUserName(HttpServletRequest req){
+        String token = req.getHeader("Authorization").replace("Bearer ","");
+        return new JwtTokenUtil().getUsernameFromToken(token);
+    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
