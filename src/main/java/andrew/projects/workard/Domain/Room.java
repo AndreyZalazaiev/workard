@@ -1,5 +1,7 @@
 package andrew.projects.workard.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Room extends BaseEntity {
     @Column(nullable = false)
-    private Integer companyId;
+    @NotNull
+    private Integer idCompany;
     private String name;
     private Integer recommendedValue;
     private String extra;
