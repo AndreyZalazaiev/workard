@@ -7,6 +7,5 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public interface CompanyRepo extends CrudRepository<Company,Integer> {
-    @Query
     public Iterable<Company> getAllByIdUser(@Param("IdUser") int IdUser);
 }

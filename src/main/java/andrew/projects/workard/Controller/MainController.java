@@ -30,7 +30,4 @@ public class MainController {
         String token = req.getHeader("Authorization").replace("Bearer ","");
         return "Hi Admin, "+ new JwtTokenUtil().getUsernameFromToken(token);
     }
-
-
-
 }

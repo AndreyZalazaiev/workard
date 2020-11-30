@@ -18,4 +18,5 @@ public interface VisitRepo extends CrudRepository<Visit, Integer> {
     List<HotSpotsDTO> findHotPoints(@Param("idCompany") int idCompany);
 
     List<Visit> findAllByIdRoom(@Param("idRoom") int idRoom);
+
 }
