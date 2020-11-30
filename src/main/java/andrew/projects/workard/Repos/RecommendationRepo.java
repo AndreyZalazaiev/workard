@@ -13,5 +13,5 @@ public interface RecommendationRepo extends CrudRepository<Recommendation,Intege
     @Query(value = " select v from Company c, Room r, Visit v " +
             "where c.id=r.idCompany and r.id=v.idRoom and c.id=:idCompany " +
             "and v.entryTime >:period")
-    ArrayList<Visit> getVisitsForTheLast3Days(@Param("idCompany") int idCompany,@Param("period") LocalDateTime dateOfStart);
+    ArrayList<Visit> getVisitsForThePeriod(@Param("idCompany") int idCompany,@Param("period") LocalDateTime dateOfStart);
 }
