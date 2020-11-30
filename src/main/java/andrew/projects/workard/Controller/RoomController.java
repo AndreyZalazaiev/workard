@@ -23,7 +23,7 @@ public class RoomController {
     public static boolean isCompanyOwner(int idRoom, User user) {
         for (Company c : user.getCompanies()
         ) {
-            if (c.getRooms().stream().filter(room -> room.getId()==idRoom).count() > 0) {
+            if (c.getRooms().stream().filter(room -> room.getId() == idRoom).count() > 0) {
                 return true;
             }
         }
@@ -37,14 +37,14 @@ public class RoomController {
             roomRepo.deleteById(idRoom);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 
     @PostMapping
     public ResponseEntity<?> createRoom(HttpServletRequest req, @RequestBody Room r) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (isCompanyOwner(r.getIdCompany(), currentUser))
+        if (currentUser.getCompanies().stream().filter(c -> c.getId().equals(r.getIdCompany())).count() > 0)
             return ResponseEntity.ok(roomRepo.save(r));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 }

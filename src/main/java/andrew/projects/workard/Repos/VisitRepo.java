@@ -12,8 +12,10 @@ import java.util.List;
 public interface VisitRepo extends CrudRepository<Visit, Integer> {
     ArrayList<Visit> findAllByIdEmployeeAndIdRoomOrderByEntryTimeDesc(@Param("idEmployee") int idEmployee, @Param("idRoom") int idRoom);
 
-    @Query("SELECT new andrew.projects.workard.Domain.DTO.HotSpotsDTO(v.idRoom, count(v.entryTime)) FROM Visit v,Company c, Room r " +
-            "where  c.id=r.idCompany and v.idRoom=r.id and c.id=:idCompany and v.exitTime is null " +
+    @Query("SELECT new andrew.projects.workard.Domain.DTO.HotSpotsDTO(v.idRoom,r.recommendedValue, count(v.id)) FROM Visit v,Company c, Room r " +
+            "where v.exitTime is null and v.idRoom=r.id and c.id=r.idCompany and c.id=:idCompany  " +
             "group by v.idRoom")
     List<HotSpotsDTO> findHotPoints(@Param("idCompany") int idCompany);
+
+    List<Visit> findAllByIdRoom(@Param("idRoom") int idRoom);
 }

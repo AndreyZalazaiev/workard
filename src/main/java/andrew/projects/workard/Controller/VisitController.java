@@ -30,6 +30,23 @@ public class VisitController {
     @Autowired
     CompanyRepo companyRepo;
 
+    @GetMapping("/hotspot")
+    public ResponseEntity<?> hotspot(HttpServletRequest req, @RequestParam int idCompany) {
+        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
+        if (currentUser.getCompanies().stream().filter(c -> c.getId() == idCompany).count() > 0) {
+            return ResponseEntity.ok(visitRepo.findHotPoints(idCompany));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> roomStats(HttpServletRequest req, @RequestParam int idRoom) {
+        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
+        if (RoomController.isCompanyOwner(idRoom, currentUser)) {
+            return ResponseEntity.ok(visitRepo.findAllByIdRoom(idRoom));
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
     @PostMapping
     public ResponseEntity<?> createVisit(@RequestParam String RFIDtag, @RequestParam String deviceCode, @RequestParam int idRoom) {
@@ -40,7 +57,7 @@ public class VisitController {
             visitRepo.saveAll(visits);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non authorized device");
     }
 
     public ArrayList<Visit> editCurrentVisits(Optional<Employee> emp, int idRoom) {
@@ -55,6 +72,12 @@ public class VisitController {
                 v.setIdRoom(idRoom);
                 visits.add(v);
             }
+        } else {
+            Visit v = new Visit();
+            v.setIdEmployee(emp.get().getId());
+            v.setEntryTime(LocalDateTime.now());
+            v.setIdRoom(idRoom);
+            visits.add(v);
         }
         return visits;
     }
@@ -64,13 +87,6 @@ public class VisitController {
         return deviceList.stream().filter(device -> device.getDeviceCode().equals(deviceCode)).count() > 0;
     }
 
-    @GetMapping("/hotspot")
-    public ResponseEntity<?> hotspot(HttpServletRequest req, @RequestParam int idCompany) {
-        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (currentUser.getCompanies().stream().filter(c -> c.getId() == idCompany).count() > 0) {
-            return ResponseEntity.ok(visitRepo.findHotPoints(idCompany));
-        }
-        return ResponseEntity.badRequest().build();
-    }
+
 }
 

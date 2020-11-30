@@ -26,19 +26,19 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postCompany(HttpServletRequest req, @RequestBody Company company){
+    public ResponseEntity<?> postCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         company.setIdUser(current.getId());
         return ResponseEntity.ok(companyRepo.save(company));
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteCompany(HttpServletRequest req, @RequestBody Company company){
+    public ResponseEntity<?> deleteCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if(current.getCompanies().contains(company)){
+        if (current.getCompanies().contains(company)) {
             companyRepo.delete(company);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 }

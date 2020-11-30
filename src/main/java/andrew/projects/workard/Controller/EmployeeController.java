@@ -33,7 +33,7 @@ public class EmployeeController {
                 return ResponseEntity.ok(employeeRepo.save(e));
             }
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 
     @DeleteMapping
@@ -43,6 +43,6 @@ public class EmployeeController {
             employeeRepo.delete(e);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 }

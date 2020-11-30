@@ -27,7 +27,7 @@ public class DeviceController {
         if (RoomController.isCompanyOwner(device.getIdRoom(), currentUser)) {
             return ResponseEntity.ok(deviceRepo.save(device));
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 
     @DeleteMapping
@@ -41,6 +41,6 @@ public class DeviceController {
                 return ResponseEntity.ok().build();
             }
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non company owner");
     }
 }
