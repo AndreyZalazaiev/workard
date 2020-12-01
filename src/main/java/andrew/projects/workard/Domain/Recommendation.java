@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class Recommendation extends BaseEntity {
     @Column(nullable = false)
     Integer idCompany;
+    Integer idEmployee;
     String text;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime date;

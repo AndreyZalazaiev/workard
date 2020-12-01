@@ -30,4 +30,8 @@ public class Employee extends BaseEntity {
     public void addVisit(Visit v) {
         visits.add(v);
     }
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "idEmployee", referencedColumnName = "id")
+    private List<Recommendation> recommendations = new ArrayList<>();
 }
