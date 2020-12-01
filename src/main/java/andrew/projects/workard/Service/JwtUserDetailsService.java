@@ -20,14 +20,11 @@ import java.util.UUID;
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
+    MailSender mailSender;
+    @Autowired
     private UserRepo userRepo;
-
     @Autowired
     private RoleRepo roleRepo;
-
-    @Autowired
-    MailSender mailSender;
-
     @Autowired
     private PasswordEncoder bcryptEncoder;
 
