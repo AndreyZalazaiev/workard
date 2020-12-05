@@ -42,7 +42,7 @@ public class EmployeeController {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         if (RoomController.isCompanyOwner(e.getIdCompany(), currentUser)) {
             employeeRepo.deleteInBatch(Arrays.asList(e));
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Deleted");
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }

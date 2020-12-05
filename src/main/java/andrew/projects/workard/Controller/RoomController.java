@@ -36,7 +36,7 @@ public class RoomController {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         if (isCompanyOwner(room.getId(), currentUser)) {
             roomRepo.deleteInBatch(Arrays.asList(room));
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Deleted");
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }

@@ -41,7 +41,7 @@ public class CompanyController {
         if (current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0) {
             companyRepo.deleteInBatch(Arrays.asList(company));
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Deleted");
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }

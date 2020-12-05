@@ -39,7 +39,7 @@ public class DeviceController {
         if (storedDevice.isPresent()) {
             if (RoomController.isCompanyOwner(storedDevice.get().getIdRoom(), currentUser)) {
                 deviceRepo.deleteInBatch(Arrays.asList(storedDevice.get()));
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok("Deleted");
             }
         }
         return ResponseEntity.badRequest().body("Non company owner");
