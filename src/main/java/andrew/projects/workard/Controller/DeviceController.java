@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RequestMapping("/device")
@@ -31,13 +32,13 @@ public class DeviceController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteDevice(HttpServletRequest req,@RequestParam String deviceCode) {
+    public ResponseEntity<?> deleteDevice(HttpServletRequest req, @RequestParam String deviceCode) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         Optional<Device> storedDevice = deviceRepo.findById(deviceCode);
 
         if (storedDevice.isPresent()) {
             if (RoomController.isCompanyOwner(storedDevice.get().getIdRoom(), currentUser)) {
-                deviceRepo.delete(storedDevice.get());
+                deviceRepo.deleteInBatch(Arrays.asList(storedDevice.get()));
                 return ResponseEntity.ok().build();
             }
         }

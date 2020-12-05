@@ -27,6 +27,7 @@ public class Company extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idCompany", referencedColumnName = "id")
     private List<Employee> employees = new ArrayList<>();
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idCompany", referencedColumnName = "id")
     private List<Recommendation> recommendations = new ArrayList<>();
@@ -42,4 +43,5 @@ public class Company extends BaseEntity {
     public void addReccomendation(Recommendation r) {
         recommendations.add(r);
     }
+
 }

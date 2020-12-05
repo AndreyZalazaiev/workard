@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/room")
@@ -31,10 +32,10 @@ public class RoomController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteRoom(HttpServletRequest req, @RequestParam int idRoom) {
+    public ResponseEntity<?> deleteRoom(HttpServletRequest req, @RequestBody Room room) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (isCompanyOwner(idRoom, currentUser)) {
-            roomRepo.deleteById(idRoom);
+        if (isCompanyOwner(room.getId(), currentUser)) {
+            roomRepo.deleteInBatch(Arrays.asList(room));
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().body("Non company owner");

@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Room extends BaseEntity {
     @Column(nullable = false)
-    @NotNull
     private Integer idCompany;
     private String name;
     private Integer recommendedValue;

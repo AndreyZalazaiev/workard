@@ -9,7 +9,6 @@ import andrew.projects.workard.Repos.RoomRepo;
 import andrew.projects.workard.Repos.UserRepo;
 import andrew.projects.workard.Service.RecommendationService;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,17 +23,17 @@ import java.util.ArrayList;
 @RequestMapping("/recommendation")
 public class RecommendationController {
     public static final int PERIOD_OF_GATHERING = 3;
-    LocalDateTime period ;
     final UserRepo userRepo;
     final RecommendationRepo recommendationRepo;
     final RecommendationService recommendationService;
     final RoomRepo roomRepo;
+    LocalDateTime period;
 
     public RecommendationController(RecommendationRepo recommendationRepo, UserRepo userRepo, RoomRepo roomRepo) {
         this.recommendationRepo = recommendationRepo;
         recommendationService = new RecommendationService();
         this.userRepo = userRepo;
-        period= LocalDateTime.now().minusDays(PERIOD_OF_GATHERING);
+        period = LocalDateTime.now().minusDays(PERIOD_OF_GATHERING);
         this.roomRepo = roomRepo;
     }
 
@@ -44,12 +43,17 @@ public class RecommendationController {
 
         if (currentUser.getCompanies().stream().filter(c -> c.getId().equals(idCompany)).count() > 0) {
 
-            ArrayList<Visit> visits = recommendationRepo.getVisitsForThePeriod(idCompany, period);
-            ArrayList<Room> rooms =roomRepo.getAllByIdCompany(idCompany);
+            val b = recommendationRepo.getAllByDateIsAfterAndIdCompany(LocalDateTime.now().minusDays(1), idCompany);
+            if (b.size() == 0) {
 
-            val res =recommendationRepo.saveAll(recommendationService.generateRecommendations(visits,rooms));
+                ArrayList<Visit> visits = recommendationRepo.getVisitsForThePeriod(idCompany, period);
+                ArrayList<Room> rooms = roomRepo.getAllByIdCompany(idCompany);
 
-            return ResponseEntity.ok(res);
+                val res = recommendationRepo.saveAll(recommendationService.generateRecommendations(visits, rooms));
+
+                return ResponseEntity.ok(res);
+            }
+            return ResponseEntity.ok("Already generated for today");
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }

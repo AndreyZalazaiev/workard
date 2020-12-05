@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private final long JWT_TOKEN_VALIDITY = 172800;
+    private final long JWT_TOKEN_VALIDITY = 1728000;
 
     private final String secret = "Ultra mega secret salt for jwt";
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +41,7 @@ public class EmployeeController {
     public ResponseEntity<?> deleteEmployee(HttpServletRequest req, @RequestBody Employee e) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         if (RoomController.isCompanyOwner(e.getIdCompany(), currentUser)) {
-            employeeRepo.delete(e);
+            employeeRepo.deleteInBatch(Arrays.asList(e));
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().body("Non company owner");
