@@ -1,6 +1,8 @@
 package andrew.projects.workard.Domain;
 
+import andrew.projects.workard.Service.CustomDateInternatsionalizator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,6 @@ public class Recommendation extends BaseEntity {
     @Column(nullable = false)
     Integer idCompany;
     String text;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using  = CustomDateInternatsionalizator.class)
     LocalDateTime date;
 }

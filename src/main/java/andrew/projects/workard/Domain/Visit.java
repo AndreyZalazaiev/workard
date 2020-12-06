@@ -1,6 +1,7 @@
 package andrew.projects.workard.Domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import andrew.projects.workard.Service.CustomDateInternatsionalizator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,9 @@ public class Visit extends BaseEntity {
     private Integer idRoom;
     @Column(nullable = false)
     private Integer idEmployee;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false)
+    @JsonSerialize(using  = CustomDateInternatsionalizator.class)
     private LocalDateTime entryTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using  = CustomDateInternatsionalizator.class)
     private LocalDateTime exitTime;
 }

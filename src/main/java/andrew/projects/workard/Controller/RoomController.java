@@ -42,10 +42,7 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createRoom(HttpServletRequest req, @RequestBody Room r) {
-        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (currentUser.getCompanies().stream().filter(c -> c.getId().equals(r.getIdCompany())).count() > 0)
+    public ResponseEntity<?> createRoom( @RequestBody Room r) {
             return ResponseEntity.ok(roomRepo.save(r));
-        return ResponseEntity.badRequest().body("Non company owner");
     }
 }
