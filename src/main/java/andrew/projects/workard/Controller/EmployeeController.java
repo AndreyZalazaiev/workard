@@ -28,9 +28,16 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<?> createEmployee(HttpServletRequest req, @RequestBody Employee e) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        Optional<Company> company =companyRepo.findById(e.getIdCompany());
+        Optional<Company> company = companyRepo.findById(e.getIdCompany());
         if (company.isPresent()) {
-            if(company.get().getIdUser()==currentUser.getId()) {
+            if (company.get().getIdUser() == currentUser.getId()) {
+                if (e.getId() != null) {
+                    Employee stroed = employeeRepo.findById(e.getId()).get();
+                    stroed.setName(e.getName());
+                    stroed.setOccupation(e.getOccupation());
+                    stroed.setRFIDtag(e.getRFIDtag());
+                    return ResponseEntity.ok(employeeRepo.save(stroed));
+                }
                 return ResponseEntity.ok(employeeRepo.save(e));
             }
         }

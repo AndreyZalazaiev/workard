@@ -24,7 +24,7 @@ public class DeviceController {
 
     @PostMapping
     public ResponseEntity<?> setDevice(HttpServletRequest req, @RequestBody Device device) {
-        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
+        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();//
         if (RoomController.isCompanyOwner(device.getIdRoom(), currentUser)) {
             return ResponseEntity.ok(deviceRepo.save(device));
         }

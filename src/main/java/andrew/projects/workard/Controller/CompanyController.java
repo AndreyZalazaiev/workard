@@ -32,6 +32,11 @@ public class CompanyController {
     public ResponseEntity<?> postCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         company.setIdUser(current.getId());
+        if (current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0) {
+            Company stored = companyRepo.findById(company.getId()).get();
+            stored.setName(company.getName());
+            return ResponseEntity.ok(companyRepo.save(stored));
+        }
         return ResponseEntity.ok(companyRepo.save(company));
     }
 
