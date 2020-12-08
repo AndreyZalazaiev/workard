@@ -32,6 +32,7 @@ public class CompanyController {
     public ResponseEntity<?> postCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         company.setIdUser(current.getId());
+
         if (hasRigthsToManipulateComapny(company, current)) {
             Company stored = companyRepo.findById(company.getId()).get();
             stored.setName(company.getName());
@@ -52,6 +53,6 @@ public class CompanyController {
     }
 
     private boolean hasRigthsToManipulateComapny(@RequestBody Company company, User current) {
-        return current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0;
+        return current.getCompanies().stream().anyMatch(c -> c.getId() == company.getId());
     }
 }

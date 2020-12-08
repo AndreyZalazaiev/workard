@@ -33,7 +33,7 @@ public class VisitController {
     @GetMapping("/hotspot")
     public ResponseEntity<?> hotspot(HttpServletRequest req, @RequestParam int idCompany) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (currentUser.getCompanies().stream().filter(c -> c.getId() == idCompany).count() > 0) {
+        if (currentUser.getCompanies().stream().anyMatch(c -> c.getId() == idCompany)) {
             return ResponseEntity.ok(visitRepo.findHotPoints(idCompany));
         }
         return ResponseEntity.badRequest().build();
@@ -66,18 +66,10 @@ public class VisitController {
             if (visits.get(0).getExitTime() == null) {
                 visits.get(0).setExitTime(LocalDateTime.now());
             } else {
-                Visit v = new Visit();
-                v.setIdEmployee(emp.get().getId());
-                v.setEntryTime(LocalDateTime.now());
-                v.setIdRoom(idRoom);
-                visits.add(v);
+                visits.add(createVisit(emp, idRoom));
             }
         } else {
-            Visit v = new Visit();
-            v.setIdEmployee(emp.get().getId());
-            v.setEntryTime(LocalDateTime.now());
-            v.setIdRoom(idRoom);
-            visits.add(v);
+            visits.add(createVisit(emp, idRoom));
         }
         return visits;
     }
@@ -87,6 +79,13 @@ public class VisitController {
         return deviceList.stream().filter(device -> device.getDeviceCode().equals(deviceCode)).count() > 0;
     }
 
+    public Visit createVisit(Optional<Employee> emp, int idRoom) {
+        Visit v = new Visit();
+        v.setIdEmployee(emp.get().getId());
+        v.setEntryTime(LocalDateTime.now());
+        v.setIdRoom(idRoom);
+        return v;
+    }
 
 }
 

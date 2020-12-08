@@ -59,6 +59,6 @@ public class RecommendationController {
     }
 
     private boolean hasRightsToGetRecom(@RequestParam int idCompany, User currentUser) {
-        return currentUser.getCompanies().stream().filter(c -> c.getId().equals(idCompany)).count() > 0;
+        return currentUser.getCompanies().stream().anyMatch(c -> c.getId().equals(idCompany));
     }
 }

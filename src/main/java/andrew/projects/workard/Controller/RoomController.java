@@ -2,10 +2,13 @@ package andrew.projects.workard.Controller;
 
 import andrew.projects.workard.Config.JwtTokenUtil;
 import andrew.projects.workard.Domain.Company;
+import andrew.projects.workard.Domain.Device;
 import andrew.projects.workard.Domain.Room;
 import andrew.projects.workard.Domain.User;
+import andrew.projects.workard.Repos.DeviceRepo;
 import andrew.projects.workard.Repos.RoomRepo;
 import andrew.projects.workard.Repos.UserRepo;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,8 @@ public class RoomController {
     UserRepo userRepo;
     @Autowired
     RoomRepo roomRepo;
+    @Autowired
+    DeviceRepo deviceRepo;
 
     @DeleteMapping
     public ResponseEntity<?> deleteRoom(HttpServletRequest req, @RequestBody Room room) {
@@ -39,6 +44,13 @@ public class RoomController {
                 Room stored = roomRepo.findById(r.getId()).get();
                 stored.setName(r.getName());
                 stored.setRecommendedValue(r.getRecommendedValue());
+                for (Device d: r.getDevices()
+                     ) {
+                    val device = deviceRepo.findById(d.getDeviceCode());
+                    if(device.isPresent()){
+                        stored.addDevice(device.get());
+                    }
+                }
                 return ResponseEntity.ok(roomRepo.save(stored));
             }
             return ResponseEntity.ok(roomRepo.save(r));
@@ -47,13 +59,13 @@ public class RoomController {
     }
 
     private boolean hasRightsToManipulateCompany(@RequestBody Room r, User currentUser) {
-        return currentUser.getCompanies().stream().filter(c->c.getId()==r.getIdCompany()).count()>0;
+        return currentUser.getCompanies().stream().anyMatch(c -> c.getId() == r.getIdCompany());
     }
 
     public static boolean isOwnerOfRoom(int idRoom, User user) {
         for (Company c : user.getCompanies()
         ) {
-            if (c.getRooms().stream().filter(room -> room.getId() == idRoom).count() > 0) {
+            if (c.getRooms().stream().anyMatch(room -> room.getId() == idRoom)) {
                 return true;
             }
         }
