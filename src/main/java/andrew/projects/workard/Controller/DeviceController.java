@@ -25,7 +25,7 @@ public class DeviceController {
     @PostMapping
     public ResponseEntity<?> setDevice(HttpServletRequest req, @RequestBody Device device) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();//
-        if (RoomController.isCompanyOwner(device.getIdRoom(), currentUser)) {
+        if (RoomController.isOwnerOfRoom(device.getIdRoom(), currentUser)) {
             return ResponseEntity.ok(deviceRepo.save(device));
         }
         return ResponseEntity.badRequest().body("Non company owner");
@@ -37,7 +37,7 @@ public class DeviceController {
         Optional<Device> storedDevice = deviceRepo.findById(deviceCode);
 
         if (storedDevice.isPresent()) {
-            if (RoomController.isCompanyOwner(storedDevice.get().getIdRoom(), currentUser)) {
+            if (RoomController.isOwnerOfRoom(storedDevice.get().getIdRoom(), currentUser)) {
                 deviceRepo.deleteInBatch(Arrays.asList(storedDevice.get()));
                 return ResponseEntity.ok("Deleted");
             }

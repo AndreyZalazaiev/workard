@@ -47,7 +47,7 @@ public class EmployeeController {
     @DeleteMapping
     public ResponseEntity<?> deleteEmployee(HttpServletRequest req, @RequestBody Employee e) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (RoomController.isCompanyOwner(e.getIdCompany(), currentUser)) {
+        if (RoomController.isOwnerOfRoom(e.getIdCompany(), currentUser)) {
             employeeRepo.deleteInBatch(Arrays.asList(e));
             return ResponseEntity.ok("Deleted");
         }

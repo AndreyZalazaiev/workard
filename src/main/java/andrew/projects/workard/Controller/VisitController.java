@@ -42,7 +42,7 @@ public class VisitController {
     @GetMapping
     public ResponseEntity<?> roomStats(HttpServletRequest req, @RequestParam int idRoom) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (RoomController.isCompanyOwner(idRoom, currentUser)) {
+        if (RoomController.isOwnerOfRoom(idRoom, currentUser)) {
             return ResponseEntity.ok(visitRepo.findAllByIdRoom(idRoom));
         }
         return ResponseEntity.badRequest().build();

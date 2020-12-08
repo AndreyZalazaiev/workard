@@ -41,10 +41,10 @@ public class RecommendationController {
     public ResponseEntity<?> getRecommendations(HttpServletRequest req, @RequestParam int idCompany) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
 
-        if (currentUser.getCompanies().stream().filter(c -> c.getId().equals(idCompany)).count() > 0) {
+        if (hasRightsToGetRecom(idCompany, currentUser)) {
 
-            val b = recommendationRepo.getAllByDateIsAfterAndIdCompany(LocalDateTime.now().minusDays(1), idCompany);
-            if (b.size() == 0) {
+            val recommendations = recommendationRepo.getAllByDateIsAfterAndIdCompany(LocalDateTime.now().minusDays(1), idCompany);
+            if (recommendations.size() == 0) {
 
                 ArrayList<Visit> visits = recommendationRepo.getVisitsForThePeriod(idCompany, period);
                 ArrayList<Room> rooms = roomRepo.getAllByIdCompany(idCompany);
@@ -56,5 +56,9 @@ public class RecommendationController {
             return ResponseEntity.ok("Already generated for today");
         }
         return ResponseEntity.badRequest().body("Non company owner");
+    }
+
+    private boolean hasRightsToGetRecom(@RequestParam int idCompany, User currentUser) {
+        return currentUser.getCompanies().stream().filter(c -> c.getId().equals(idCompany)).count() > 0;
     }
 }

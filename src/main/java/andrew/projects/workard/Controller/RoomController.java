@@ -24,7 +24,7 @@ public class RoomController {
     @DeleteMapping
     public ResponseEntity<?> deleteRoom(HttpServletRequest req, @RequestBody Room room) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (isCompanyOwner(room.getId(), currentUser)) {
+        if (isOwnerOfRoom(room.getId(), currentUser)) {
             roomRepo.deleteInBatch(Arrays.asList(room));
             return ResponseEntity.ok("Deleted");
         }
@@ -34,7 +34,7 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<?> createRoom(HttpServletRequest req, @RequestBody Room r) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (isCompanyOwner(r.getIdCompany(), currentUser)) {
+        if (hasRightsToManipulateCompany(r, currentUser)) {
             if (r.getId() != null) {
                 Room stored = roomRepo.findById(r.getId()).get();
                 stored.setName(r.getName());
@@ -46,8 +46,11 @@ public class RoomController {
         return ResponseEntity.badRequest().body("Non company owner");
     }
 
+    private boolean hasRightsToManipulateCompany(@RequestBody Room r, User currentUser) {
+        return currentUser.getCompanies().stream().filter(c->c.getId()==r.getIdCompany()).count()>0;
+    }
 
-    public static boolean isCompanyOwner(int idRoom, User user) {
+    public static boolean isOwnerOfRoom(int idRoom, User user) {
         for (Company c : user.getCompanies()
         ) {
             if (c.getRooms().stream().filter(room -> room.getId() == idRoom).count() > 0) {

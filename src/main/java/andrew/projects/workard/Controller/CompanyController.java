@@ -32,7 +32,7 @@ public class CompanyController {
     public ResponseEntity<?> postCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         company.setIdUser(current.getId());
-        if (current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0) {
+        if (hasRigthsToManipulateComapny(company, current)) {
             Company stored = companyRepo.findById(company.getId()).get();
             stored.setName(company.getName());
             return ResponseEntity.ok(companyRepo.save(stored));
@@ -43,11 +43,15 @@ public class CompanyController {
     @DeleteMapping
     public ResponseEntity<?> deleteCompany(HttpServletRequest req, @RequestBody Company company) {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
-        if (current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0) {
-            companyRepo.deleteInBatch(Arrays.asList(company));
 
+        if (hasRigthsToManipulateComapny(company, current)) {
+            companyRepo.deleteInBatch(Arrays.asList(company));
             return ResponseEntity.ok("Deleted");
         }
         return ResponseEntity.badRequest().body("Non company owner");
+    }
+
+    private boolean hasRigthsToManipulateComapny(@RequestBody Company company, User current) {
+        return current.getCompanies().stream().filter(c -> c.getId() == company.getId()).count() > 0;
     }
 }

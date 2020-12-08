@@ -14,9 +14,6 @@ public class User extends BaseEntity {
     private String password;
     private String email;
     private String emailConfirmation;
-    @Column(columnDefinition = "varchar(10) default 'en'")
-    private String locale;
-
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "users_authorities",
