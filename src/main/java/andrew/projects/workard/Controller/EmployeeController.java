@@ -30,7 +30,7 @@ public class EmployeeController {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         Optional<Company> company = companyRepo.findById(e.getIdCompany());
         if (company.isPresent()) {
-            if (company.get().getIdUser() == currentUser.getId()) {
+            if (company.get().getIdUser().equals(currentUser.getId())) {
                 if (e.getId() != null) {
                     Employee stroed = employeeRepo.findById(e.getId()).get();
                     stroed.setName(e.getName());

@@ -20,12 +20,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/login",
+            "/register",
+            "/hello",
+            "/activate/*",
+            "/"
+    };
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     @Autowired
     private UserDetailsService jwtUserDetailsService;
-
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
@@ -49,9 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .cors().and()
-                .authorizeRequests().antMatchers("/profile").authenticated().and()
-                .authorizeRequests().antMatchers("/admin").hasAuthority("Admin").and()
-                .authorizeRequests().antMatchers("/login", "/register","/hello","/activate/*","/").permitAll().
+                .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().
                 anyRequest().authenticated().and().
                 exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
