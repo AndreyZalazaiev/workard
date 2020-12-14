@@ -22,12 +22,12 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/recommendation")
 public class RecommendationController {
-    public static final int PERIOD_OF_GATHERING = 3;
-    final UserRepo userRepo;
-    final RecommendationRepo recommendationRepo;
-    final RecommendationService recommendationService;
-    final RoomRepo roomRepo;
-    LocalDateTime period;
+    private static final int PERIOD_OF_GATHERING = 3;
+    private final UserRepo userRepo;
+    private final RecommendationRepo recommendationRepo;
+    private final RecommendationService recommendationService;
+    private final RoomRepo roomRepo;
+    private LocalDateTime period;
 
     public RecommendationController(RecommendationRepo recommendationRepo, UserRepo userRepo, RoomRepo roomRepo) {
         this.recommendationRepo = recommendationRepo;

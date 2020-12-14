@@ -35,7 +35,15 @@ public class RoomController {
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }
-
+    @GetMapping
+    public ResponseEntity<?> getRooms(HttpServletRequest req, @RequestParam int idCompany)
+    {
+        User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
+        if(currentUser.getCompanies().stream().anyMatch(c -> c.getId() == idCompany)) {
+            return ResponseEntity.ok(roomRepo.getAllByIdCompany(idCompany));
+        }
+        return ResponseEntity.badRequest().body("Non company owner");
+    }
     @PostMapping
     public ResponseEntity<?> createRoom(HttpServletRequest req, @RequestBody Room r) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();

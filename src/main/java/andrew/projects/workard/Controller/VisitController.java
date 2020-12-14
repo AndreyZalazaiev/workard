@@ -45,7 +45,7 @@ public class VisitController {
         if (RoomController.isOwnerOfRoom(idRoom, currentUser)) {
             return ResponseEntity.ok(visitRepo.findAllByIdRoom(idRoom));
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("Non owner of this room");
     }
 
     @PostMapping
@@ -54,8 +54,8 @@ public class VisitController {
         if (emp.isPresent() && isInDeviceList(idRoom, deviceCode)) {
 
             ArrayList<Visit> visits = editCurrentVisits(emp, idRoom);
-            visitRepo.saveAll(visits);
-            return ResponseEntity.ok().build();
+
+            return ResponseEntity.ok(visitRepo.saveAll(visits));
         }
         return ResponseEntity.badRequest().body("Non authorized device");
     }

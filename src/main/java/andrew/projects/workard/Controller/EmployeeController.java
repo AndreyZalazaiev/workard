@@ -7,6 +7,7 @@ import andrew.projects.workard.Domain.User;
 import andrew.projects.workard.Repos.CompanyRepo;
 import andrew.projects.workard.Repos.EmployeeRepo;
 import andrew.projects.workard.Repos.UserRepo;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class EmployeeController {
                 if (e.getId() != null) {
                     Employee stroed = employeeRepo.findById(e.getId()).get();
                     stroed.setName(e.getName());
+                    stroed.setIdCompany(company.get().getId());
                     stroed.setOccupation(e.getOccupation());
                     stroed.setRFIDtag(e.getRFIDtag());
                     return ResponseEntity.ok(employeeRepo.save(stroed));

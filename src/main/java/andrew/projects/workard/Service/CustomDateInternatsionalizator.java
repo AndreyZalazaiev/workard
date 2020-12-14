@@ -23,7 +23,7 @@ public class CustomDateInternatsionalizator extends JsonSerializer<LocalDateTime
         String lang = LocaleContextHolder.getLocale().getLanguage();
 
         if (lang.equalsIgnoreCase("UK")) {
-            pattern = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss", Locale.UK)
+            pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss", Locale.UK)
                     .withZone(ZoneId.of("Europe/Kiev"));
 
         } else {
