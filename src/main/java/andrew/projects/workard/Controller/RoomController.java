@@ -1,13 +1,11 @@
 package andrew.projects.workard.Controller;
 
 import andrew.projects.workard.Config.JwtTokenUtil;
-import andrew.projects.workard.Domain.Company;
-import andrew.projects.workard.Domain.Device;
-import andrew.projects.workard.Domain.Room;
-import andrew.projects.workard.Domain.User;
+import andrew.projects.workard.Domain.*;
 import andrew.projects.workard.Repos.DeviceRepo;
 import andrew.projects.workard.Repos.RoomRepo;
 import andrew.projects.workard.Repos.UserRepo;
+import andrew.projects.workard.Repos.VisitRepo;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +23,17 @@ public class RoomController {
     RoomRepo roomRepo;
     @Autowired
     DeviceRepo deviceRepo;
+    @Autowired
+    VisitRepo visitRepo;
 
     @DeleteMapping
     public ResponseEntity<?> deleteRoom(HttpServletRequest req, @RequestBody Room room) {
         User currentUser = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
         if (isOwnerOfRoom(room.getId(), currentUser)) {
+            Room r=roomRepo.findById(room.getId()).get();
+            deviceRepo.deleteAll(r.getDevices());
+            visitRepo.deleteAll(r.getVisits());
+
             roomRepo.deleteInBatch(Arrays.asList(room));
             return ResponseEntity.ok("Deleted");
         }
@@ -52,13 +56,8 @@ public class RoomController {
                 Room stored = roomRepo.findById(r.getId()).get();
                 stored.setName(r.getName());
                 stored.setRecommendedValue(r.getRecommendedValue());
-                for (Device d: r.getDevices()
-                     ) {
-                    val device = deviceRepo.findById(d.getDeviceCode());
-                    if(device.isPresent()){
-                        stored.addDevice(device.get());
-                    }
-                }
+                deviceRepo.deleteAll(stored.getDevices());
+                deviceRepo.saveAll(r.getDevices());
                 return ResponseEntity.ok(roomRepo.save(stored));
             }
             return ResponseEntity.ok(roomRepo.save(r));

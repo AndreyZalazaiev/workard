@@ -3,16 +3,17 @@ package andrew.projects.workard.Controller;
 import andrew.projects.workard.Config.JwtTokenUtil;
 import andrew.projects.workard.Domain.Company;
 import andrew.projects.workard.Domain.User;
-import andrew.projects.workard.Repos.CompanyRepo;
-import andrew.projects.workard.Repos.UserRepo;
+import andrew.projects.workard.Repos.*;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/company")
@@ -22,6 +23,7 @@ public class CompanyController {
     CompanyRepo companyRepo;
     @Autowired
     UserRepo userRepo;
+
 
     @GetMapping
     public ResponseEntity<?> getCompanies(HttpServletRequest req) {
@@ -50,13 +52,13 @@ public class CompanyController {
         User current = userRepo.findByUsername(JwtTokenUtil.obtainUserName(req)).get();
 
         if (hasRigthsToManipulateComapny(company, current)) {
-            companyRepo.deleteInBatch(Arrays.asList(company));
+            companyRepo.deleteInBatch(Collections.singletonList(company));
             return ResponseEntity.ok("Deleted");
         }
         return ResponseEntity.badRequest().body("Non company owner");
     }
 
     private boolean hasRigthsToManipulateComapny(@RequestBody Company company, User current) {
-        return current.getCompanies().stream().anyMatch(c -> c.getId() == company.getId());
+        return current.getCompanies().stream().anyMatch(c -> c.getId().equals(company.getId()));
     }
 }

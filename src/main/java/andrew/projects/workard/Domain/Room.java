@@ -23,11 +23,11 @@ public class Room extends BaseEntity {
     private Integer recommendedValue;
     private String extra;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
     @JoinColumn(name = "idRoom", referencedColumnName = "id")
     private List<Visit> visits = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch  = FetchType.LAZY,orphanRemoval = true)
     @JoinColumn(name = "idRoom", referencedColumnName = "id")
     private List<Device> devices = new ArrayList<>();
 

@@ -32,16 +32,5 @@ public class Company extends BaseEntity {
     @JoinColumn(name = "idCompany", referencedColumnName = "id")
     private List<Recommendation> recommendations = new ArrayList<>();
 
-    public void addRoom(Room r) {
-        rooms.add(r);
-    }
-
-    public void addEmployee(Employee e) {
-        employees.add(e);
-    }
-
-    public void addReccomendation(Recommendation r) {
-        recommendations.add(r);
-    }
 
 }
