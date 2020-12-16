@@ -66,7 +66,7 @@ public class RoomController {
     }
 
     private boolean hasRightsToManipulateCompany(@RequestBody Room r, User currentUser) {
-        return currentUser.getCompanies().stream().anyMatch(c -> c.getId() == r.getIdCompany());
+        return currentUser.getCompanies().stream().anyMatch(c -> c.getId().equals(r.getIdCompany()));
     }
 
     public static boolean isOwnerOfRoom(int idRoom, User user) {
